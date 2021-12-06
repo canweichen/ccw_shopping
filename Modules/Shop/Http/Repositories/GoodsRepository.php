@@ -18,7 +18,14 @@ class GoodsRepository{
         return objectToArray($collect);
     }
 
-    public function getGoodsDetail($goodId){
+    public function getGoodsDetail($goodId): array
+    {
+        $collect = ShopGoods::find($goodId);
+        return objectToArray($collect);
+    }
 
+    public function deleteGoods($goodId): bool
+    {
+        return ShopGoods::where('gid',$goodId)->delete();
     }
 }

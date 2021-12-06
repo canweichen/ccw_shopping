@@ -21,7 +21,7 @@ class BaseController extends Controller{
      * @param int $code
      * @return array
      */
-    public function errors(string $message,array $data,int $code): array
+    public function errors(string $message,array $data = [],int $code = 500): array
     {
         return self::responseBody($code,$message,$data);
     }

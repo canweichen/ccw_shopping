@@ -14,13 +14,23 @@ class GoodsController extends BaseController {
 
     public function showGoodsList(Request $request): array
     {
-        $data = $this->goodsService->getGoodsList();
+        $name = $request->input('name','');
+        $type = $request->input('type',0);
+        $limit = $request->input('limit',10);
+        $data = $this->goodsService->getGoodsList($name,$type,$limit);
         return $this->success($data);
     }
 
-    public function showGoodsDetail(Request $request,$goodsId): array
+    public function showGoodsDetail($goodsId): array
     {
-        return $this->success($request->all());
+        if($goodsId <= 0){
+            return $this->errors('商品不存在');
+        }
+        $info = $this->goodsService->getGoodsDetail($goodsId);
+        if(empty($info)){
+            return $this->errors('商品不存在');
+        }
+        return $this->success($info);
     }
 
     public function createGoods(Request $request): array
@@ -33,8 +43,15 @@ class GoodsController extends BaseController {
         return $this->success($request->all());
     }
 
-    public function deleteGoods(Request $request,$goodsId): array
+    public function deleteGoods($goodsId): array
     {
-        return $this->success($request->all());
+        if($goodsId <= 0){
+            return $this->errors('商品不存在');
+        }
+        $result = $this->goodsService->deleteGoods($goodsId);
+        if(!$result){
+            return $this->errors('商品删除失败');
+        }
+        return $this->success();
     }
 }
