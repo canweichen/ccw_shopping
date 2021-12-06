@@ -27,7 +27,8 @@ Route::group(['prefix' => '/shop','middleware' => []],function(){
         Route::get('detail/{adminUserId}','AdminUserController@showAdminUserDetail');
         Route::post('create','AdminUserController@createAdminUser');
         Route::put('edit/{adminUserId}','AdminUserController@editAdminUser');
-        Route::delete('delete/{adminUserId}','AdminUserController@deleteAdminUser');
+        Route::get('delete/{adminUserId}','AdminUserController@deleteAdminUser');
+        Route::get('restore/{adminUserId}','AdminUserController@restoreAdminUser');
     });
     Route::group(['prefix' => 'goods'],function(){
        Route::get('show','GoodsController@showGoodsList');

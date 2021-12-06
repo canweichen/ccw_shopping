@@ -12,43 +12,60 @@ class AdminUserController extends BaseController{
         $this->adminUserService = $adminUserService;
     }
 
-    public function showGoodsList(Request $request): array
+    public function showAdminUserList(Request $request): array
     {
-        $name = $request->input('name','');
-        $type = $request->input('type',0);
+        $username = $request->input('username','');
+        $mobile = $request->input('mobile','');
+        $email = $request->input('email','');
         $limit = $request->input('limit',10);
-        $data = [];
+        $data = $this->adminUserService->getAdminUserList($username,$mobile,$email,$limit);
         return $this->success($data);
     }
 
-    public function showGoodsDetail($adminUserId): array
+    public function showAdminUserDetail($adminUserId): array
     {
         if($adminUserId <= 0){
             return $this->errors('管理员不存在');
         }
-        $info = [];
+        $info = $this->adminUserService->getAdminUserDetail($adminUserId);
+        if(empty($info)){
+            return $this->errors('管理员不存在');
+        }
         return $this->success($info);
     }
 
-    public function createGoods(Request $request): array
+    public function createAdminUser(Request $request): array
     {
         return $this->success($request->all());
     }
 
-    public function editGoods(Request $request,$goodsId): array
+    public function editAdminUser(Request $request,$goodsId): array
     {
         return $this->success($request->all());
     }
 
-    public function deleteGoods($goodsId): array
+    public function deleteAdminUser($adminUserId): array
     {
-        if($goodsId <= 0){
+        if($adminUserId <= 0){
             return $this->errors('管理员不存在');
         }
-        $result = [];
+        $result = $this->adminUserService->deleteAdminUser($adminUserId);
         if(!$result){
-            return $this->errors('商品删除失败');
+            return $this->errors('管理员删除失败');
         }
         return $this->success();
     }
+
+    public function restoreAdminUser($adminUserId): array
+    {
+        if($adminUserId <= 0){
+            return $this->errors('管理员不存在');
+        }
+        $result = $this->adminUserService->restoreAdminUser($adminUserId);
+        if(!$result){
+            return $this->errors('管理员复职失败');
+        }
+        return $this->success();
+    }
+
 }
