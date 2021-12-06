@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Admin\Enum;
+namespace Modules\Admin\Enums;
 
 class OrderEnum{
     const ORDER_CANCEL = -1;
