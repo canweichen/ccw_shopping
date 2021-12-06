@@ -3,13 +3,13 @@ namespace Modules\Shop\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
-use Modules\Shop\Http\Services\GoodsService;
+use Modules\Shop\Http\Services\AdminUserService;
 
-class GoodsController extends BaseController {
-    protected $goodsService;
+class AdminUserController extends BaseController{
+    protected $adminUserService;
 
-    public function __construct(GoodsService $goodsService){
-        $this->goodsService = $goodsService;
+    public function __construct(AdminUserService $adminUserService){
+        $this->adminUserService = $adminUserService;
     }
 
     public function showGoodsList(Request $request): array
@@ -17,19 +17,16 @@ class GoodsController extends BaseController {
         $name = $request->input('name','');
         $type = $request->input('type',0);
         $limit = $request->input('limit',10);
-        $data = $this->goodsService->getGoodsList($name,$type,$limit);
+        $data = [];
         return $this->success($data);
     }
 
-    public function showGoodsDetail($goodsId): array
+    public function showGoodsDetail($adminUserId): array
     {
-        if($goodsId <= 0){
-            return $this->errors('商品不存在');
+        if($adminUserId <= 0){
+            return $this->errors('管理员不存在');
         }
-        $info = $this->goodsService->getGoodsDetail($goodsId);
-        if(empty($info)){
-            return $this->errors('商品不存在');
-        }
+        $info = [];
         return $this->success($info);
     }
 
@@ -46,9 +43,9 @@ class GoodsController extends BaseController {
     public function deleteGoods($goodsId): array
     {
         if($goodsId <= 0){
-            return $this->errors('商品不存在');
+            return $this->errors('管理员不存在');
         }
-        $result = $this->goodsService->deleteGoods($goodsId);
+        $result = [];
         if(!$result){
             return $this->errors('商品删除失败');
         }
