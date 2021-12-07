@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Utils\ResponseUtil;
 
 class BaseController extends Controller{
     /**
@@ -12,7 +11,7 @@ class BaseController extends Controller{
      */
     public function success(array $data = [],int $code = 200,string $message = 'success'): array
     {
-        return self::responseBody($code,$message,$data);
+        return simpleResponse($code,$message,$data);
     }
 
     /**
@@ -23,20 +22,7 @@ class BaseController extends Controller{
      */
     public function errors(string $message,array $data = [],int $code = 500): array
     {
-        return self::responseBody($code,$message,$data);
+        return simpleResponse($code,$message,$data);
     }
 
-    /**
-     * @param $code
-     * @param $message
-     * @param $data
-     * @return array
-     */
-    private static function responseBody($code,$message,$data):array{
-        return [
-            'code' => $code,
-            'message' => $message,
-            'data' => $data
-        ];
-    }
 }
