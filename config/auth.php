@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'shopApi',
         'passwords' => 'users',
     ],
 
@@ -39,6 +39,10 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+        'shopApi' => [
+            'driver' => 'jwt',
+            'provider' => 'adminUsers',
         ],
     ],
 
@@ -65,10 +69,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+         'adminUsers' => [
+             'driver' => 'eloquent',
+             'model' => App\Models\ShopAdminUser::class,
+         ],
     ],
 
     /*

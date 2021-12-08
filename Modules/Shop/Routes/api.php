@@ -18,10 +18,12 @@ Route::middleware('auth:api')->get('/shop', function (Request $request) {
 });
 
 Route::group(['prefix' => '/auth'],function(){
-    Route::get('show','GoodsController@showGoodsList');
+    Route::get('/login','ShopLoginController@login');
+    Route::get('/logout','ShopLoginController@logout')->middleware('jwt.auth');
+    Route::get('/refresh','ShopLoginController@refresh')->middleware('jwt.auth');
 });
 
-Route::group(['prefix' => '/shop','middleware' => []],function(){
+Route::group(['prefix' => '/shop','middleware' => ['jwt.auth']],function(){
     Route::group(['prefix' => 'admin'],function(){
         Route::get('show','AdminUserController@showAdminUserList');
         Route::get('detail/{adminUserId}','AdminUserController@showAdminUserDetail');

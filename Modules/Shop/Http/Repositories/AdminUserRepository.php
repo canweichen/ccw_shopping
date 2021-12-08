@@ -78,7 +78,7 @@ class AdminUserRepository{
             'admin_user_username' => $adminUser['admin_user_username'] ?? '',
             'admin_user_mobile' => $adminUser['admin_user_mobile'],
             'admin_user_email' => $adminUser['admin_user_email'],
-            'admin_user_password' => $adminUser['admin_user_password'],
+            'password' => $adminUser['password'],
             'admin_user_salt' => $adminUser['admin_user_salt'],
             'admin_user_avatar' => $adminUser['admin_user_avatar'] ?? '',
             'admin_user_is_admin' => $adminUser['admin_user_is_admin'] ?? 0,
@@ -103,7 +103,7 @@ class AdminUserRepository{
             'admin_user_status' => $adminUser['admin_user_status'] ?? 0
         ];
         if(!empty($adminUser['admin_user_password'])){
-            $data['admin_user_password'] = $adminUser['admin_user_password'];
+            $data['password'] = $adminUser['password'];
             $data['admin_user_salt'] = $adminUser['admin_user_salt'];
         }
         return AdminUserModel::where('admin_user_id',$adminUserId)->update($data);
