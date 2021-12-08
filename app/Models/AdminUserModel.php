@@ -11,4 +11,5 @@ class AdminUserModel extends Model{
     protected $created_at;
     protected $updated_at;
     protected $deleted_at;
+
 }
