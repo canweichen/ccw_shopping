@@ -1,0 +1,12 @@
+g, alice, admin
+g, bob, member
+
+p, memeber, /foo, GET
+p, memeber, /foo/:id, GET
+p, member, api/auth/test/:id, GET
+
+g, admin, member
+
+p, admin, /foo, POST
+p, admin, /foo/:id, PUT
+p, admin, /foo/:id, DELETE
