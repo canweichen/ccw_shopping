@@ -5,6 +5,8 @@ use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Modules\Shop\Http\Services\AdminUserService;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Casbin\Enforcer;
+use CasbinAdapter\DBAL\Adapter;
 
 class ShopLoginController extends BaseController{
 
@@ -12,6 +14,26 @@ class ShopLoginController extends BaseController{
     public function __construct(AdminUserService $adminUserService)
     {
         $this->adminUserService = $adminUserService;
+    }
+
+    public function test(Request $request,$id): array{
+       $adapter = Adapter::newAdapter([
+           'driver' => 'pdo_mysql',
+           'host' => 'localhost',
+           'port' => '3306',
+           'dbname' => 'demo',
+           'user' => 'root',
+           'password' => 'root',
+       ]);
+        //base_path().'/policy.csv'
+        $enforcer = new Enforcer(base_path().'/model.conf',$adapter);
+        $obj = $request->input('user','');
+        $sub = $request->path();
+        $act = $request->method();
+        if($enforcer->enforce($obj, $sub, $act)){
+            return $this->success([base_path(),$request->path(),$request->url(),$request->method(),$enforcer]);
+        }
+        return $this->errors('Forbidden',[base_path(),$request->path(),$request->url(),$request->method()],403);
     }
 
     public function login(Request $request): array
