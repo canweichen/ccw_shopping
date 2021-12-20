@@ -91,6 +91,15 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'casbin_mysql' => [
+            'driver' => 'pdo_mysql',
+            'host' => ENV('DB_HOST','127.0.0.1'),
+            'port' => ENV('DB_PORT','3306'),
+            'dbname' => ENV('DB_DATABASE',''),
+            'user' => ENV('DB_USERNAME','root'),
+            'password' => ENV('DB_PASSWORD',''),
+        ]
+
     ],
 
     /*

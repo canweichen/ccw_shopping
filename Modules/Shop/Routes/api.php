@@ -33,6 +33,20 @@ Route::group(['prefix' => '/shop','middleware' => ['jwt.auth']],function(){
         Route::delete('delete/{adminUserId}','AdminUserController@deleteAdminUser');
         Route::post('restore/{adminUserId}','AdminUserController@restoreAdminUser');
     });
+    Route::group(['prefix' => 'permission'],function(){
+        Route::get('show','ShopPermissionController@getShopPermissionList');
+        Route::get('detail/{permissionId}','ShopPermission@getShopPermissionDetail');
+        Route::post('create','ShopPermission@addShopPermission');
+        Route::put('edit/{permissionId}','ShopPermission@updateShopPermission');
+        Route::delete('delete/{permissionId}','ShopPermission@deleteShopPermission');
+    });
+    Route::group(['prefix' => 'role'],function(){
+        Route::get('show','ShopRoleController@showShopRoleList');
+        Route::get('detail/{roleId}','ShopRoleController@showShopRoleDetail');
+        Route::post('create','ShopRoleController@createShopRole');
+        Route::put('edit/{roleId}','ShopRoleController@editShopRole');
+        Route::delete('delete/{roleId}','ShopRoleController@deleteShopRole');
+    });
     Route::group(['prefix' => 'goods'],function(){
        Route::get('show','GoodsController@showGoodsList');
        Route::get('detail/{goodsId}','GoodsController@showGoodsDetail');

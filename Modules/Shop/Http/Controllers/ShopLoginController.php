@@ -5,8 +5,7 @@ use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Modules\Shop\Http\Services\AdminUserService;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Casbin\Enforcer;
-use CasbinAdapter\DBAL\Adapter;
+use App\Utils\CasbinRuleAdapterUtil;
 
 class ShopLoginController extends BaseController{
 
@@ -17,19 +16,17 @@ class ShopLoginController extends BaseController{
     }
 
     public function test(Request $request,$id): array{
-       $adapter = Adapter::newAdapter([
-           'driver' => 'pdo_mysql',
-           'host' => 'localhost',
-           'port' => '3306',
-           'dbname' => 'demo',
-           'user' => 'root',
-           'password' => 'root',
-       ]);
+       //$adapter = Adapter::newAdapter(config('database.connections.casbin_mysql'));
         //base_path().'/policy.csv'
-        $enforcer = new Enforcer(base_path().'/model.conf',$adapter);
+        $enforcer = CasbinRuleAdapterUtil::getEnforce();//new Enforcer(base_path().'/model.conf',$adapter);
+        $enforcer->addPermissionForUser('role2','write');
+        $enforcer->addPermissionForUser('alice1','write');
+        $enforcer->addRolesForUser('alice',['role2','role3']);
+        $enforcer->deletePermission('write');
+        dd($enforcer->getRolesForUser('alice'));
         $obj = $request->input('user','');
         $sub = $request->path();
-        $act = $request->method();
+        $act = $request->method() == 'GET' ? 'read' : 'write';
         if($enforcer->enforce($obj, $sub, $act)){
             return $this->success([base_path(),$request->path(),$request->url(),$request->method(),$enforcer]);
         }
