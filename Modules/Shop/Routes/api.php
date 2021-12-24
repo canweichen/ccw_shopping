@@ -24,7 +24,7 @@ Route::group(['prefix' => '/auth'],function(){
     Route::get('/refresh','ShopLoginController@refresh')->middleware('jwt.auth');
 });
 
-Route::group(['prefix' => '/shop','middleware' => ['jwt.auth']],function(){
+Route::group(['prefix' => '/shop','middleware' => ['jwt.auth','check.rules']],function(){
     Route::group(['prefix' => 'admin'],function(){
         Route::get('show','AdminUserController@showAdminUserList');
         Route::get('detail/{adminUserId}','AdminUserController@showAdminUserDetail');

@@ -5,7 +5,7 @@ use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Modules\Shop\Http\Services\AdminUserService;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Utils\CasbinRuleAdapterUtil;
+use App\Utils\CabinRuleAdapterUtil;
 
 class ShopLoginController extends BaseController{
 
@@ -16,14 +16,11 @@ class ShopLoginController extends BaseController{
     }
 
     public function test(Request $request,$id): array{
-       //$adapter = Adapter::newAdapter(config('database.connections.casbin_mysql'));
-        //base_path().'/policy.csv'
-        $enforcer = CasbinRuleAdapterUtil::getEnforce();//new Enforcer(base_path().'/model.conf',$adapter);
+        $enforcer = CabinRuleAdapterUtil::getEnforce();
         $enforcer->addPermissionForUser('role2','write');
         $enforcer->addPermissionForUser('alice1','write');
         $enforcer->addRolesForUser('alice',['role2','role3']);
         $enforcer->deletePermission('write');
-        dd($enforcer->getRolesForUser('alice'));
         $obj = $request->input('user','');
         $sub = $request->path();
         $act = $request->method() == 'GET' ? 'read' : 'write';
