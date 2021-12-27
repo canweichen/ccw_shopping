@@ -17,6 +17,10 @@ class ShopPermissionService{
         return $this->permissionRepository->getShopPermissionsById($permissionId);
     }
 
+    public function getShopPermissionDetailByUrl(string $url):array{
+        return $this->permissionRepository->getShopPermissionsByUrl($url);
+    }
+
     public function addShopPermission(array $permission):array{
         $permissionDetail = $this->permissionRepository->getShopPermissionsByName($permission['permission_name']);
         if(empty($permissionDetail)){

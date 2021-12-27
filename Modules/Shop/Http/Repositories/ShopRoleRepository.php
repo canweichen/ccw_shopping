@@ -26,6 +26,17 @@ class ShopRoleRepository{
         return objectToArray($collect);
     }
 
+    public function getShopRolesByIds(array $roleIds): array
+    {
+        if(count($roleIds) <= 0){
+            return [];
+        }
+        $collect = ShopRoles::where('role_status','>=',0)
+            ->whereIn('role_id',$roleIds)
+            ->pluck('role_id');
+        return objectToArray($collect);
+    }
+
     public function getShopRolesByName(string $roleName): array
     {
         if(empty($roleName)){

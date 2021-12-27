@@ -6,7 +6,10 @@ use App\Models\AdminUserModel;
 class AdminUserRepository{
 
     public function getAdminUserList($username,$mobile,$email,$limit):array{
-        $collect = AdminUserModel::when(!empty($username),function($query) use($username){
+        $collect = AdminUserModel::select(['admin_user_id','admin_user_name','admin_user_username','admin_user_mobile','admin_user_email',
+            'admin_user_email_verified_at','admin_user_is_admin','admin_user_status','admin_user_avatar','admin_user_sex','admin_user_last_login_date',
+            'created_at'])
+            ->when(!empty($username),function($query) use($username){
                 return $query->where('admin_user_username','like',"%{$username}%");
             })
             ->when(!empty($mobile),function($query) use($username){
