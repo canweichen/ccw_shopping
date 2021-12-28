@@ -22,9 +22,10 @@ class EnforcerMiddleware
         if(empty($adminUserId)){
             return response(simpleResponse(500,'Token not found'));
         }
-        $permission = app(ShopPermissionService::class)->getShopPermissionDetailByUrl($request->path());
+        $permissionUrl = preg_replace(['/{/','/}/'],[':',''],$request->route()->uri);
+        $permission = app(ShopPermissionService::class)->getShopPermissionDetailByUrl($permissionUrl);
         if(empty($permission)){
-            return response(simpleResponse(500,'Permission not found'));
+            return response(simpleResponse(500,'Permission not found',$permissionUrl));
         }
         $sub = getCabinSub($adminUserId);
         $obj = getCabinObj($permission['permission_id']);
