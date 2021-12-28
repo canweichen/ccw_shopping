@@ -121,7 +121,7 @@ class CabinRuleAdapterUtil extends Facade {
             return false;
         }
         foreach($permissions as $permission){
-            self::addPermissionForRole($roleId,$permission['permission_id'],$permission['method']);
+            self::addPermissionForRole($roleId,$permission['permission_id'],$permission['permission_method']);
         }
         return true;
     }

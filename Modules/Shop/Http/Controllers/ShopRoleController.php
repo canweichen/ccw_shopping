@@ -25,7 +25,8 @@ class ShopRoleController extends BaseController{
     }
 
     public function createShopRole(Request $request): array{
-        $role = $request->only(['role_id','role_name','role_status']);
+        $role = $request->only(['role_id','role_name','role_status','permission_ids']);
+        $role['permission_ids'] = $role['permission_ids'] ?: [];
         $result = $this->roleService->addShopRole($role);
         if($result['code'] == 200){
             return $this->success();
@@ -34,8 +35,9 @@ class ShopRoleController extends BaseController{
     }
 
     public function editShopRole(Request $request,$roleId): array{
-        $role = $request->only(['role_id','role_name','role_status']);
+        $role = $request->only(['role_id','role_name','role_status','permission_ids']);
         $role['role_id'] = $roleId;
+        $role['permission_ids'] = $role['permission_ids'] ?: [];
         $result = $this->roleService->updateShopRole($role);
         if($result['code'] == 200){
             return $this->success();

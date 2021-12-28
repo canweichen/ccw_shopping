@@ -47,7 +47,7 @@ class ShopRoleService{
         }
         $result = $this->roleRepository->updateShopRoles($role);
         $cabinService = new CabinRuleService();
-        $cabinService->assignPermissionForRole($role['role_id'],$role['permission_ids']);
+        $cabinService->updatePermissionForRole($role['role_id'],$role['permission_ids']);
         if(!$result){
             return simpleResponse(500,'角色更新失败');
         }
