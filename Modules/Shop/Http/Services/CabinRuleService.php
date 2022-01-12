@@ -28,16 +28,16 @@ class CabinRuleService{
         $currentRole = CabinRuleAdapterUtil::getRolesForUser($adminUserId);
         //filter common
         $roleArr = ArrayUtil::compareArray($roleIds,$currentRole);
-        if(!empty($roleArr['diffB'])){
+        if(!empty($roleArr['delete'])){
             //delete role
-            $isDeleteOk = CabinRuleAdapterUtil::deleteRolesAboutUser($adminUserId,$roleArr['diffB']);
+            $isDeleteOk = CabinRuleAdapterUtil::deleteRolesAboutUser($adminUserId,$roleArr['delete']);
             if(!$isDeleteOk){
                 return false;
             }
         }
         //reload assign role for user
-        if(!empty($roleArr['diffA'])){
-            $this->assignRoleForUser($adminUserId,$roleArr['diffA']);
+        if(!empty($roleArr['new'])){
+            $this->assignRoleForUser($adminUserId,$roleArr['new']);
         }
         return true;
     }
