@@ -61,6 +61,16 @@ class CabinRuleAdapterUtil extends Facade {
         return self::getEnforce()->deleteRoleForUser($sub,$rol);
     }
 
+    public static function deleteRolesAboutUser($adminUserId,$roleIds): bool
+    {
+        $sub = getCabinSub($adminUserId);
+        foreach($roleIds as $roleId){
+            $rol = getCabinRole($roleId);
+            self::getEnforce()->deleteRoleForUser($sub,$rol);
+        }
+        return true;
+    }
+
     public static function deleteRolesForUser($adminUserId): bool
     {
         //deleteRolesForUser 这个接口有bug

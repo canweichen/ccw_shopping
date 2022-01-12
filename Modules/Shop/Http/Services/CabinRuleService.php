@@ -1,6 +1,7 @@
 <?php
 namespace Modules\Shop\Http\Services;
 
+use App\Utils\ArrayUtil;
 use App\Utils\CabinRuleAdapterUtil;
 use Modules\Shop\Http\Repositories\ShopPermissionRepository;
 use Modules\Shop\Http\Repositories\ShopRoleRepository;
@@ -25,15 +26,20 @@ class CabinRuleService{
         }
         //Has roles for the user
         $currentRole = CabinRuleAdapterUtil::getRolesForUser($adminUserId);
-        if(count($currentRole) > 0){
+        //filter common
+        $roleArr = ArrayUtil::compareArray($roleIds,$currentRole);
+        if(!empty($roleArr['diffB'])){
             //delete role
-            $isDeleteOk = CabinRuleAdapterUtil::deleteRolesForUser($adminUserId);
+            $isDeleteOk = CabinRuleAdapterUtil::deleteRolesAboutUser($adminUserId,$roleArr['diffB']);
             if(!$isDeleteOk){
                 return false;
             }
         }
         //reload assign role for user
-        return $this->assignRoleForUser($adminUserId,$roleIds);
+        if(!empty($roleArr['diffA'])){
+            $this->assignRoleForUser($adminUserId,$roleArr['diffA']);
+        }
+        return true;
     }
 
     public function assignPermissionForRole($roleId,array $permissionIds):bool{
