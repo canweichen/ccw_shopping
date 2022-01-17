@@ -3,12 +3,13 @@ namespace App\Utils;
 
 class ArrayUtil{
     public static function compareArray(array $newArr,array $oldArr):array{
+        $data = array();
         //common part
-        $commonArray = array_intersect($newArr,$oldArr);
+        $data['common'] = array_intersect($newArr,$oldArr);
         //a - b
-        $new = array_diff($newArr,$oldArr);
+        $data['new'] = array_diff($newArr,$oldArr);
         //b - a
-        $delete = array_diff($oldArr,$newArr);
-        return ['common' => $commonArray,'new' => $new, 'delete' => $delete];
+        $data['delete'] = array_diff($oldArr,$newArr);
+        return $data;
     }
 }

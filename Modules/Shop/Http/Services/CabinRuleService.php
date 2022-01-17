@@ -60,14 +60,19 @@ class CabinRuleService{
         }
         //Has permission for the role
         $currentPermissions = CabinRuleAdapterUtil::getPermissionsForRole($roleId);
-        if(!empty($currentPermissions)){
+        //Filter permission
+        $permissionArr = ArrayUtil::compareArray($permissionIds,array_column($currentPermissions,1));
+        if(!empty($permissionArr['delete'])){
             //remove permission under the role
-            $isDeleteOk = CabinRuleAdapterUtil::deletePermissionsForRole($roleId);
+            $isDeleteOk = CabinRuleAdapterUtil::deletePermissionsAboutRole($roleId,$permissionArr['delete']);
             if(!$isDeleteOk){
                 return false;
             }
         }
         //reload assign permission for the role
-        return $this->assignPermissionForRole($roleId,$permissionIds);
+        if(!empty($permissionArr['new'])){
+            $this->assignPermissionForRole($roleId,$permissionIds);
+        }
+        return true;
     }
 }

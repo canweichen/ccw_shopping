@@ -63,14 +63,21 @@ class CabinRuleAdapterUtil extends Facade {
 
     public static function deleteRolesAboutUser($adminUserId,$roleIds): bool
     {
-        $sub = getCabinSub($adminUserId);
-        foreach($roleIds as $roleId){
-            $rol = getCabinRole($roleId);
-            self::getEnforce()->deleteRoleForUser($sub,$rol);
+        try{
+            foreach($roleIds as $roleId){
+                self::deleteRoleForUser($adminUserId,$roleId);
+            }
+        }catch(\Exception $err){
+            return false;
         }
         return true;
     }
 
+    /**
+     * @param $adminUserId
+     * @return bool
+     * @throws
+     */
     public static function deleteRolesForUser($adminUserId): bool
     {
         //deleteRolesForUser 这个接口有bug
@@ -141,6 +148,18 @@ class CabinRuleAdapterUtil extends Facade {
         $rol = getCabinRole($roleId);
         $obj = getCabinObj($permissionId);
         return self::getEnforce()->deletePermissionForUser($rol,$obj);
+    }
+
+    public static function deletePermissionsAboutRole($roleId,array $permissionIds): bool
+    {
+        try{
+            foreach($permissionIds as $permissionId){
+                self::deletePermissionForRole($roleId,$permissionId);
+            }
+        }catch(\Exception $err){
+            return false;
+        }
+        return true;
     }
 
     public static function deletePermissionsForRole($roleId): bool
