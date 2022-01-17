@@ -22,8 +22,13 @@ class ShopRoleService{
         if(empty($roleDetail)){
             return simpleResponse(500,'角色名称重复');
         }
-        $result = $this->roleRepository->addShopRoles($role);
-        if(!$result){
+        $roleId = $this->roleRepository->addShopRoles($role);
+        //assign permission for user
+        if(!empty($role['permission_ids'])){
+            $cabinService = new CabinRuleService();
+            $cabinService->assignPermissionForRole($roleId,$role['permission_ids']);
+        }
+        if(!$roleId){
             return simpleResponse(500,'角色添加失败');
         }
         return simpleResponse(200,'角色添加成功');
@@ -41,6 +46,8 @@ class ShopRoleService{
             }
         }
         $result = $this->roleRepository->updateShopRoles($role);
+        $cabinService = new CabinRuleService();
+        $cabinService->updatePermissionForRole($role['role_id'],$role['permission_ids']);
         if(!$result){
             return simpleResponse(500,'角色更新失败');
         }

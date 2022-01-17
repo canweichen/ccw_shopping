@@ -27,6 +27,29 @@ class ShopPermissionRepository{
         return objectToArray($collect);
     }
 
+    public function getShopPermissionsByIds(array $permissionIds): array
+    {
+        if(count($permissionIds) <= 0){
+            return [];
+        }
+        $collect = ShopPermissions::select('permission_id','permission_method')
+            ->where('permission_status','>=',0)
+            ->whereIn('permission_id',$permissionIds)
+            ->get();
+        return objectToArray($collect);
+    }
+
+    public function getShopPermissionsByUrl(string $url): array
+    {
+        if(empty($url)){
+            return [];
+        }
+        $collect = ShopPermissions::where('permission_status','>=',0)
+            ->where('permission_url',$url)
+            ->first();
+        return objectToArray($collect);
+    }
+
     public function getShopPermissionsByName(string $permissionName): array
     {
         if(empty($permissionName)){

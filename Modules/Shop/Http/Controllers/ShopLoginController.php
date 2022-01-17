@@ -17,10 +17,6 @@ class ShopLoginController extends BaseController{
 
     public function test(Request $request,$id): array{
         $enforcer = CabinRuleAdapterUtil::getEnforce();
-        $enforcer->addPermissionForUser('role2','write');
-        $enforcer->addPermissionForUser('alice1','write');
-        $enforcer->addRolesForUser('alice',['role2','role3']);
-        $enforcer->deletePermission('write');
         $obj = $request->input('user','');
         $sub = $request->path();
         $act = $request->method() == 'GET' ? 'read' : 'write';

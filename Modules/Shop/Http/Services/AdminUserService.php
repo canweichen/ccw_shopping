@@ -2,6 +2,7 @@
 namespace Modules\Shop\Http\Services;
 
 use App\Models\ShopAdminUser;
+use Modules\Shop\Http\Services\CabinRuleService;
 use Modules\Shop\Http\Repositories\AdminUserRepository;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -35,8 +36,14 @@ class AdminUserService{
         //save data
         $adminUser['admin_user_salt'] = getPasswordSalt();
         $adminUser['password'] = encodePassword($adminUser['password'],$adminUser['admin_user_salt']);
-        $result = $this->adminUserRepository->saveAdminUser($adminUser);
-        if(!$result){
+        $adminUserId = $this->adminUserRepository->saveAdminUser($adminUser);
+        //assign role for user
+        if(!empty($adminUser['role_ids'])){
+            $cabinRuleService = new CabinRuleService;
+            $cabinRuleService->assignRoleForUser($adminUserId,$adminUser['role_ids']);
+        }
+
+        if(!$adminUserId){
             return simpleResponse(500,'管理员创建失败');
         }
         return simpleResponse();
@@ -67,6 +74,9 @@ class AdminUserService{
         }
         //update data
         $result = $this->adminUserRepository->updateAdminUser($adminUserId,$adminUser);
+        //update role for user
+        $cabinService = new CabinRuleService();
+        $cabinService->updateRoleForUser($adminUserId,$adminUser['role_ids']);
         if(!$result){
             return simpleResponse(500,'管理员更新失败');
         }

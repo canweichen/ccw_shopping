@@ -56,4 +56,55 @@ if(!function_exists('simpleResponse')){
         ];
     }
 }
+/**
+ * 获取权限校验的Role
+ */
+if(!function_exists('getCabinRole')){
+    function getCabinRole($roleId): string
+    {
+        return 'R'.$roleId;
+    }
+}
+/**
+ * 获取权限校验的Sub
+ */
+if(!function_exists('getCabinSub')){
+    function getCabinSub($adminUserId): string
+    {
+        return 'U'.$adminUserId;
+    }
+}
+/**
+ * 获取权限校验的Obj
+ */
+if(!function_exists('getCabinObj')){
+    function getCabinObj($permissionId): string
+    {
+        return 'P'.$permissionId;
+    }
+}
+/**
+ * 获取权限校验的Act
+ */
+if(!function_exists('getCabinAct')){
+    function getCabinAct($method): string
+    {
+        return $method === 'GET' ? 'read' : 'write';
+    }
+}
+/**
+ * 替换特定字符
+ */
+if(!function_exists('removeLetters')){
+    function removeLetters(array $strArr,string $letter):array{
+        if(empty($strArr) || empty($letter)){
+            return $strArr;
+        }
+        $newStrArr = [];
+        foreach($strArr as $val){
+            array_push($newStrArr,str_replace($letter,'',$val));
+        }
+        return $newStrArr;
+    }
+}
 

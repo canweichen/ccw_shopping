@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Utils\CabinRuleAdapterUtil;
 use Closure;
 use Illuminate\Http\Request;
+use Modules\Shop\Http\Services\ShopPermissionService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class EnforcerMiddleware
@@ -21,10 +22,15 @@ class EnforcerMiddleware
         if(empty($adminUserId)){
             return response(simpleResponse(500,'Token not found'));
         }
-        $adminUserId = strval($adminUserId);
-        $sub = $request->path();
-        $act = $request->method() == 'GET' ? 'read' : 'write';
-        if(!CabinRuleAdapterUtil::getEnforce()->enforce($adminUserId,$sub,$act)){
+        $permissionUrl = preg_replace(['/{/','/}/'],[':',''],$request->route()->uri);
+        $permission = app(ShopPermissionService::class)->getShopPermissionDetailByUrl($permissionUrl);
+        if(empty($permission)){
+            return response(simpleResponse(500,'Permission not found',$permissionUrl));
+        }
+        $sub = getCabinSub($adminUserId);
+        $obj = getCabinObj($permission['permission_id']);
+        $act = getCabinAct($request->method());
+        if(!CabinRuleAdapterUtil::getEnforce()->enforce($sub,$obj,$act)){
             return response(simpleResponse(403,'Forbidden'));
         }
         return $next($request);
