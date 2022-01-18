@@ -3,7 +3,9 @@ namespace Modules\Shop\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Modules\Shop\Http\Services\AdminUserService;
+use Modules\Shop\Http\Services\CabinRuleService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Utils\CabinRuleAdapterUtil;
 
@@ -35,6 +37,25 @@ class ShopLoginController extends BaseController{
             return $this->errors($result['message']);
         }
         return $this->success($result['data']);
+    }
+
+    public function me(Request $request): array{
+        //获取用户信息
+        $adminUser = Auth::user();
+        if(empty($adminUser['admin_user_id'])){
+            return $this->errors('用户信息已失效，请重新登录...');
+        }
+        $data = [
+            'user_id' => $adminUser['admin_user_id'],
+            'user_name' => $adminUser['admin_user_name'],
+            'user_nickname' => $adminUser['admin_user_nickname'] ?: '',
+            'user_mobile' => $adminUser['admin_user_mobile'],
+            'user_email' => $adminUser['admin_user_email']
+        ];
+        //获取菜单权限
+        $data['permission'] = CabinRuleService::getMenuList($adminUser['admin_user_id']);
+
+        return $this->success($data);
     }
 
     public function logout():array

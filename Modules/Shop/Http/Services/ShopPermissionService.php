@@ -62,4 +62,16 @@ class ShopPermissionService{
         }
         return simpleResponse(200,'权限删除成功');
     }
+
+    public function getPermissionTrees():array{
+        //permission header
+        $permissions = $this->permissionRepository->getShopPermissions('',-9999);
+        //permission body
+        $permissions = collect($permissions);
+        $permissionTrees = $permissions->where('permission_parent',0)->all();
+        foreach($permissionTrees as $key => $permission){
+            $permissionTrees[$key]['child'] = $permissions->where('permission_parent',$permission['permission_id'])->all();
+        }
+        return $permissionTrees;
+    }
 }

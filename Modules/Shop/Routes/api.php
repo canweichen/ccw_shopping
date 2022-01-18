@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/shop', function (Request $request) {
 Route::group(['prefix' => '/auth'],function(){
     Route::get('/test/{id}','ShopLoginController@test');
     Route::post('/login','ShopLoginController@login');
+    Route::post('/me','ShopLoginController@me')->middleware('jwt.auth');
     Route::post('/logout','ShopLoginController@logout')->middleware('jwt.auth');
     Route::post('/refresh','ShopLoginController@refresh')->middleware('jwt.auth');
 });

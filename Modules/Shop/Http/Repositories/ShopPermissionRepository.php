@@ -7,12 +7,12 @@ class ShopPermissionRepository{
 
     public function getShopPermissions(string $permissionName,int $limit): array
     {
-        $collect = ShopPermissions::where('permission_status','>=',0)
+        $query = ShopPermissions::where('permission_status','>=',0)
             ->when(!empty($permissionName),function($query) use($permissionName){
                 return $query->where('permission_name','LIKE',"%{$permissionName}%");
             })
-            ->orderByDesc('permission_id')
-            ->simplePaginate($limit);
+            ->orderByDesc('permission_id');
+        $collect = $limit == -9999 ? $query->select(['permission_id','permission_name','permission_parent','permission_method'])->get() : $query->simplePaginate($limit);
         return objectToArray($collect);
     }
 
@@ -27,15 +27,17 @@ class ShopPermissionRepository{
         return objectToArray($collect);
     }
 
-    public function getShopPermissionsByIds(array $permissionIds): array
+    public function getShopPermissionsByIds(array $permissionIds,int $parent = 0): array
     {
         if(count($permissionIds) <= 0){
             return [];
         }
-        $collect = ShopPermissions::select('permission_id','permission_method')
-            ->where('permission_status','>=',0)
-            ->whereIn('permission_id',$permissionIds)
-            ->get();
+        $query = ShopPermissions::select('permission_id','permission_parent','permission_name','permission_method')->where('permission_status','>=',0);
+        if($parent){
+            $collect = $query->whereIn('permission_parent',$permissionIds)->groupBy('permission_id')->get();
+        }else{
+            $collect = $query->whereIn('permission_id',$permissionIds)->get();
+        }
         return objectToArray($collect);
     }
 

@@ -13,7 +13,8 @@ class CabinRuleService{
             return false;
         }
         //assign role
-        $roleIds = app(ShopRoleRepository::class)->getShopRolesByIds($roleIds);
+        $roleArr = app(ShopRoleRepository::class)->getShopRolesByIds($roleIds);
+        $roleIds = array_column($roleArr,'role_id');
         if(!empty($roleIds)){
             return CabinRuleAdapterUtil::addRolesForUser($adminUserId,$roleIds);
         }
@@ -74,5 +75,29 @@ class CabinRuleService{
             $this->assignPermissionForRole($roleId,$permissionIds);
         }
         return true;
+    }
+
+    public static function getMenuList(int $adminUserId):array{
+        $data = ['role' => [],'permission' => []];
+        //获取角色
+        $currentRoleIds = CabinRuleAdapterUtil::getRolesForUser($adminUserId);
+        if(empty($currentRoleIds)){
+            return $data;
+        }
+        $data['role'] = app(ShopRoleRepository::class)->getShopRolesByIds($currentRoleIds);
+        //角色下权限
+        $permissionIds = [];
+        foreach($data['role'] as $item){
+            $permission = CabinRuleAdapterUtil::getPermissionsForRole($item['role_id']);
+            $permissionIds = array_merge($permissionIds,array_column($permission,1));
+        }
+        $permissionIds = array_unique($permissionIds);
+        //解析子权限
+        $permissionInstance = app(ShopPermissionRepository::class);
+        $permissionArr = $permissionInstance->getShopPermissionsByIds($permissionIds);
+        //获取父级权限菜单
+        $parentIds = array_unique(array_column($permissionArr,'permission_parent'));
+        $data['permission'] = $permissionInstance->getShopPermissionsByIds($parentIds);
+        return $data;
     }
 }
