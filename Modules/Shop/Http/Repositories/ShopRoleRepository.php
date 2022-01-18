@@ -33,7 +33,7 @@ class ShopRoleRepository{
         }
         $collect = ShopRoles::where('role_status','>=',0)
             ->whereIn('role_id',$roleIds)
-            ->pluck('role_id');
+            ->get();
         return objectToArray($collect);
     }
 
